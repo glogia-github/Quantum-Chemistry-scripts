@@ -1,0 +1,26 @@
+#set argv0 [lindex $argv 0] ;# not working to pass variables with source
+set argv0 [molinfo top] ;# can use the GUI selected top molecule, and turn off all others automatically.
+foreach molecule [molinfo list] {
+	mol off $molecule
+	}
+mol on $argv0
+set dir . 
+set m 0
+set mol_data [mol list $argv0]
+puts "moldata"
+puts $mol_data
+set mol_name [lindex $mol_data 4]
+puts "molname"
+puts $mol_name
+scale by 2
+render Tachyon  $mol_name "/usr/local/lib/vmd/tachyon_LINUXAMD64" -aasamples 12 %s -format BMP -res 2048 1024 -trans_max_surfaces 1 -o %s.bmp
+#-res 2048 1024 only makes it wider, not higher quality need to zoom molecule too using scale. based on your screen resolution you may need to use more or less scale.
+scale by 0.5 ;# reduce the scale back to normal-comfortable viewing level.
+
+#render POV3 $mol_name povray +W%w +H%h -I%s -O%s.tga +X +A +FT +UA
+#allows for transparent backgrounds, needs seperate install
+# Alternative renders
+#render Tachyon output_name "/usr/local/lib/vmd/tachyon_LINUXAMD64" -aasamples 12 -format PNG -o %s.png
+#render PostScript vmdscene.ps ghostview %s & ;# vectorgraphic output, looks very clean, needs some more vertex, gsview not well installed?
+#render PostScript vmdscene.ps gs -q -dNOPAUSE -sDEVICE=pdfwrite -r72 --antialias -sOutputfile=%s.pdf &
+#render PostScript vmdscene.ps gs -q -dNOPAUSE %s &

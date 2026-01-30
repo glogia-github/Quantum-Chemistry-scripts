@@ -1,0 +1,26 @@
+set dir .
+set n 0
+axes location Off ;# turns off axes in corner
+display depthcue off ;# need to be off to render with transparent background
+display projection Orthographic ;# will look flat
+color Display Background 8 ;# colour silver 6, colour white 8
+foreach file [glob -directory . *.xyz] {
+    mol new $file
+	mol color Name ;# colouring based on atomtype
+	if { ! [ catch {colorinfo category Name B} reply] } {
+		color Name B 31 ;# colour orange2 Bromine atoms
+	}
+	if { ! [ catch {colorinfo category Name I} reply] } {
+		color Name I 13 ;# colour mauve Iodine atoms
+	}
+	mol representation CPK 1.000000 0.300000 12.000000 12.000000 ;# dynamic bonding based on CHARM forcefield is applied.
+	mol selection all
+	mol material Opaque
+	mol addrep $n
+	mol off $n
+	incr n
+}
+#makes last loaded top and drawing turned on
+set m [expr $n - 1]  
+mol on $m
+mol top $m
